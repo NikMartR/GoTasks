@@ -1,59 +1,55 @@
 package main
 
 import (
- "bytes"
- "context"
- "encoding/json"
- "fmt"
- "io"
- "net/http"
- "time"
+  "fmt"
+  "bytes"
+  "context"
+  "encoding/json"
+  "io"
+  "net/http"
+  "time"
 )
 
 func main() {
- client := &http.Client{}
- ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
- defer cancel()
+  client := &http.Client{}
+  ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+  defer cancel()
 
- // Базовый URL сервера
- baseURL := "http://localhost:8080"
+  baseURL := "http://localhost:8080"
 
- // GET /version
- versionResp, err := doGet(ctx, client, baseURL+"/version")
- if err != nil {
+  versionResp, err := doGet(ctx, client, baseURL+"/version")
+  if err != nil {
   fmt.Println("Ошибка запроса /version:", err)
  } else {
   fmt.Println("Version:", versionResp)
  }
 
- // POST /decode
- encoded := base64Encoder("Hello, World!")
- body := map[string]string{"inputString": encoded}
- decodedResp, err := doPost(ctx, client, baseURL+"/decode", body)
- if err != nil {
-  fmt.Println("Ошибка запроса /decode:", err)
+  encoded := base64Encoder("Hello, World!")
+  body := map[string]string{"inputString": encoded}
+  decodedResp, err := doPost(ctx, client, baseURL+"/decode", body)
+  if err != nil {
+    fmt.Println("Ошибка запроса /decode:", err)
  } else {
-  fmt.Println("Decoded:", decodedResp)
+    fmt.Println("Decoded:", decodedResp)
  }
 
- // GET /hard-op
  hardOpResp, err := doGet(ctx, client, baseURL+"/hard-op")
  if err != nil {
-  fmt.Println("Ошибка запроса /hard-op:", err)
+   fmt.Println("Ошибка запроса /hard-op:", err)
  } else {
-  fmt.Println("Hard-op response:", hardOpResp)
+   fmt.Println("Hard-op response:", hardOpResp)
  }
 }
 
 func doGet(ctx context.Context, client *http.Client, url string) (string, error) {
- req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
- if err != nil {
-  return "", err
+  req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+  if err != nil {
+    return "", err
  }
 
  resp, err := client.Do(req)
  if err != nil {
-  return "", err
+   return "", err
  }
  defer resp.Body.Close()
 
