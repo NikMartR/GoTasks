@@ -12,15 +12,12 @@ import (
 const version = "v1.0.0"
 
 func main() {
-	// Создаём HTTP сервер
 	mux := http.NewServeMux()
 
-	// Обработчики маршрутов
 	mux.HandleFunc("/version", handleVersion)
 	mux.HandleFunc("/decode", handleDecode)
 	mux.HandleFunc("/hard-op", handleHardOp)
 
-	// Запускаем сервер с graceful shutdown
 	server := &http.Server{
 		Addr:    ":8080",
 		Handler: mux,
@@ -66,8 +63,6 @@ func handleHardOp(w http.ResponseWriter, r *http.Request) {
 	// Имитация долгой операции
 	sleepTime := rand.Intn(10) + 10 // 10–20 секунд
 	time.Sleep(time.Duration(sleepTime) * time.Second)
-
-	// Случайный статус ответа
 	if rand.Intn(2) == 0 {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
